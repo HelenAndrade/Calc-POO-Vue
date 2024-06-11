@@ -3,7 +3,8 @@
   </template>
   
   <script lang="ts">
-  import { defineComponent, PropType } from 'vue';
+  import { defineComponent } from 'vue';
+  import type { PropType } from 'vue';
   
   export default defineComponent({
     name: 'CalculatorButton',
@@ -25,7 +26,7 @@
   });
   </script>
   
-  <style scoped>
+  <style >
   button {
     width: 100%;
     height: 60px;
