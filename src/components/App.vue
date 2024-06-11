@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CalculatorComponent from './components/Calculator.vue';
+import CalculatorComponent from './Calculator.vue';
 
 export default defineComponent({
   name: 'App',
@@ -17,5 +17,5 @@ export default defineComponent({
 </script>
 
 <style>
-/* Adicione estilos globais aqui */
+
 </style>
