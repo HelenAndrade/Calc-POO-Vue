@@ -1,9 +1,4 @@
-export enum Operation {
-  ADD = '+',
-  SUBTRACT = '-',
-  MULTIPLY = '*',
-  DIVIDE = '/'
-}
+import { Operation } from './Operation'
 
 export class Calculator {
   private _numA: number = 0
