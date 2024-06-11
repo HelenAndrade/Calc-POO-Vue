@@ -2,32 +2,34 @@
   <div class="calculator">
     <div class="display">{{ displayText }}</div>
     <div class="buttons">
-      <CalculatorButton v-for="(label, index) in buttonLabels" :key="index" :label="label" :onClick="() => handleButtonClick(label)" />
+      <CalculatorButton
+        v-for="(label, index) in buttonLabels"
+        :key="index"
+        :label="label"
+        :onClick="() => handleButtonClick(label)"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import CalculatorButton from './CalculatorButton.vue';
-import { Calculator } from '../store/modules/Calculator';
-import { Operation } from '../store/modules/Operation';
+import { defineComponent, ref, inject } from 'vue';
 
 export default defineComponent({
   name: 'CalculatorComponent',
-  components: { CalculatorButton },
   setup() {
-    const calculator = new Calculator();
+    const calculator = inject('calculator') as any;
+    const operation = inject('operation') as any;
     const display = ref<string>('');
     const displayText = ref<string>('');
-    let currentOperation: Operation | null = null;
+    let currentOperation: typeof operation | null = null;
     let currentInput: string = '';
 
     const buttonLabels = [
-      '7', '8', '9', Operation.DIVIDE,
-      '4', '5', '6', Operation.MULTIPLY,
-      '1', '2', '3', Operation.SUBTRACT,
-      'C', '0', '=', Operation.ADD
+      '7', '8', '9', operation.DIVIDE,
+      '4', '5', '6', operation.MULTIPLY,
+      '1', '2', '3', operation.SUBTRACT,
+      'C', '0', '=', operation.ADD
     ];
 
     const handleButtonClick = (label: string) => {
@@ -36,8 +38,8 @@ export default defineComponent({
         return;
       }
 
-      if (Object.values(Operation).includes(label as Operation)) {
-        setOperation(label as Operation);
+      if (Object.values(operation).includes(label as typeof operation)) {
+        setOperation(label as typeof operation);
         return;
       }
 
@@ -59,9 +61,9 @@ export default defineComponent({
       updateDisplay();
     };
 
-    const setOperation = (operation: Operation) => {
+    const setOperation = (op: typeof operation) => {
       if (currentInput === '' && currentOperation) {
-        currentOperation = operation;
+        currentOperation = op;
         updateDisplay();
         return;
       }
@@ -70,7 +72,7 @@ export default defineComponent({
         calculate();
       }
 
-      currentOperation = operation;
+      currentOperation = op;
       currentInput = '';
       updateDisplay();
     };
