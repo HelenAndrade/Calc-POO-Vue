@@ -10,8 +10,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import CalculatorButton from './CalculatorButton.vue';
-import { Calculator } from '../Calculator';
-import { Operation } from '../Operation';
+import { Calculator } from '../store/modules/Calculator';
+import { Operation } from '../store/modules/Operation';
 
 export default defineComponent({
   name: 'CalculatorComponent',
@@ -27,7 +27,7 @@ export default defineComponent({
       '7', '8', '9', Operation.DIVIDE,
       '4', '5', '6', Operation.MULTIPLY,
       '1', '2', '3', Operation.SUBTRACT,
-      '0', 'C', '=', Operation.ADD
+      'C', '0', '=', Operation.ADD
     ];
 
     const handleButtonClick = (label: string) => {
