@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent, inject } from 'vue';
 import CalculatorButton from './CalculatorButton.vue';
-import { Operation } from '../store/modules/Operation'; 
+import { Operation } from '../store/modules/Operation'; // Assumindo que você importará o enum a partir de um arquivo chamado operation.ts
 
 export default defineComponent({
   name: 'CalculatorComponent',
@@ -25,7 +25,7 @@ export default defineComponent({
   data() {
     return {
       calculator: inject('calculator') as any,
-      operation: inject('Operation') as any,
+      operation: Operation,
       display: '',
       displayText: '',
       currentOperation: null as Operation | null,
@@ -40,6 +40,8 @@ export default defineComponent({
   },
   methods: {
     handleButtonClick(label: string) {
+      if (!label) return; // Adiciona verificação para label undefined
+
       if (label === 'C') {
         this.clear();
         return;
