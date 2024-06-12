@@ -13,109 +13,105 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject } from 'vue';
+import { defineComponent, inject } from 'vue';
+import CalculatorButton from './CalculatorButton.vue';
+import { Operation } from '../store/modules/Operation'; 
 
 export default defineComponent({
   name: 'CalculatorComponent',
-  setup() {
-    const calculator = inject('calculator') as any;
-    const operation = inject('operation') as any;
-    const display = ref<string>('');
-    const displayText = ref<string>('');
-    let currentOperation: typeof operation | null = null;
-    let currentInput: string = '';
-
-    const buttonLabels = [
-      '7', '8', '9', operation.DIVIDE,
-      '4', '5', '6', operation.MULTIPLY,
-      '1', '2', '3', operation.SUBTRACT,
-      'C', '0', '=', operation.ADD
-    ];
-
-    const handleButtonClick = (label: string) => {
+  components: {
+    CalculatorButton,
+  },
+  data() {
+    return {
+      calculator: inject('calculator') as any,
+      operation: inject('Operation') as any,
+      display: '',
+      displayText: '',
+      currentOperation: null as Operation | null,
+      currentInput: '',
+      buttonLabels: [
+        '7', '8', '9', Operation.DIVIDE,
+        '4', '5', '6', Operation.MULTIPLY,
+        '1', '2', '3', Operation.SUBTRACT,
+        'C', '0', '=', Operation.ADD
+      ]
+    };
+  },
+  methods: {
+    handleButtonClick(label: string) {
       if (label === 'C') {
-        clear();
+        this.clear();
         return;
       }
 
-      if (Object.values(operation).includes(label as typeof operation)) {
-        setOperation(label as typeof operation);
+      if (Object.values(this.operation).includes(label as Operation)) {
+        this.setOperation(label as Operation);
         return;
       }
 
       if (label === '=') {
-        calculate();
+        this.calculate();
         return;
       }
 
-      addToInput(label);
-    };
-
-    const addToInput = (value: string) => {
-      currentInput += value;
-      if (currentOperation === null) {
-        calculator.setNumA(parseFloat(currentInput));
+      this.addToInput(label);
+    },
+    addToInput(value: string) {
+      this.currentInput += value;
+      if (this.currentOperation === null) {
+        this.calculator.setNumA(parseFloat(this.currentInput));
       } else {
-        calculator.setNumB(parseFloat(currentInput));
+        this.calculator.setNumB(parseFloat(this.currentInput));
       }
-      updateDisplay();
-    };
-
-    const setOperation = (op: typeof operation) => {
-      if (currentInput === '' && currentOperation) {
-        currentOperation = op;
-        updateDisplay();
+      this.updateDisplay();
+    },
+    setOperation(op: Operation) {
+      if (this.currentInput === '' && this.currentOperation) {
+        this.currentOperation = op;
+        this.updateDisplay();
         return;
       }
 
-      if (currentOperation !== null) {
-        calculate();
+      if (this.currentOperation !== null) {
+        this.calculate();
       }
 
-      currentOperation = op;
-      currentInput = '';
-      updateDisplay();
-    };
-
-    const calculate = () => {
-      if (currentOperation !== null) {
+      this.currentOperation = op;
+      this.currentInput = '';
+      this.updateDisplay();
+    },
+    calculate() {
+      if (this.currentOperation !== null) {
         try {
-          calculator.setOperation(currentOperation);
-          const result = calculator.calculate();
-          display.value = result.toString();
-          calculator.setNumA(result);
-          currentOperation = null;
-          currentInput = result.toString();
+          this.calculator.setOperation(this.currentOperation);
+          const result = this.calculator.calculate();
+          this.display = result.toString();
+          this.calculator.setNumA(result);
+          this.currentOperation = null;
+          this.currentInput = result.toString();
         } catch (error) {
-          display.value = (error as Error).message;
-          clear();
+          this.display = (error as Error).message;
+          this.clear();
         }
       }
-      updateDisplay();
-    };
-
-    const clear = () => {
-      currentInput = '';
-      currentOperation = null;
-      display.value = '';
-      displayText.value = '';
-      calculator.setNumA(0);
-      calculator.setNumB(0);
-    };
-
-    const updateDisplay = () => {
-      if (currentOperation === null) {
-        displayText.value = currentInput;
+      this.updateDisplay();
+    },
+    clear() {
+      this.currentInput = '';
+      this.currentOperation = null;
+      this.display = '';
+      this.displayText = '';
+      this.calculator.setNumA(0);
+      this.calculator.setNumB(0);
+    },
+    updateDisplay() {
+      if (this.currentOperation === null) {
+        this.displayText = this.currentInput;
       } else {
-        displayText.value = `${calculator.getNumA()} ${currentOperation} ${currentInput}`;
+        this.displayText = `${this.calculator.getNumA()} ${this.currentOperation} ${this.currentInput}`;
       }
-    };
-
-    return {
-      displayText,
-      buttonLabels,
-      handleButtonClick
-    };
+    }
   }
 });
 </script>
